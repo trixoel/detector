@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Alumnado{% endblock %}
+
+{% block contenido %}
+    {% for clase in clases %}
+        <div class="panel">
+            <h2>{{ clase.nombre }} <small>{{ clase.alumnos | length }} alumno(s)</small></h2>
+            <table>
+                <tr>
+                    <th>Alumno</th>
+                    <th>Cuenta de familia</th>
+                    <th>Faltas sin justificar</th>
+                </tr>
+                {% for alumno in clase.alumnos %}
+                <tr>
+                    <td>{{ alumno.nombre }}</td>
+                    <td>
+                        {% if alumno.email_padre %}
+                            <span class="badge a_tiempo">Activa</span> {{ alumno.email_padre }}
+                        {% else %}
+                            <span class="badge falta">Sin registrar</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if alumno.faltas_pendientes %}
+                            <span class="badge retraso">{{ alumno.faltas_pendientes }}</span>
+                        {% else %}
+                            <span class="motivo">ninguna</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}

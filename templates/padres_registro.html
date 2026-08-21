@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Portal de familias — Registro</title>
+    <style>
+        body {
+            font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: #f4f5f7; color: #1f2937;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; margin: 0;
+        }
+        .caja {
+            background: white; border: 1px solid #e5e7eb; border-radius: 10px;
+            padding: 2rem; width: 320px;
+        }
+        h1 { font-size: 1.2rem; margin-top: 0; }
+        input, select {
+            width: 100%; padding: .5rem; margin-bottom: .8rem;
+            border: 1px solid #e5e7eb; border-radius: 6px; box-sizing: border-box;
+        }
+        button {
+            width: 100%; padding: .6rem; border: none; border-radius: 6px;
+            background: #111827; color: white; cursor: pointer;
+        }
+        .error { color: #dc2626; font-size: .85rem; margin-bottom: .8rem; }
+        .login { text-align: center; margin-top: 1rem; font-size: .85rem; }
+        a { color: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="caja">
+        <h1>Crear cuenta de familia</h1>
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        <form method="post">
+            <select name="persona_id" required>
+                <option value="" disabled selected>Selecciona a tu hijo/a</option>
+                {% for persona_id, nombre in personas %}
+                    <option value="{{ persona_id }}">{{ nombre }}</option>
+                {% endfor %}
+            </select>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Registrarme</button>
+        </form>
+        <div class="login">¿Ya tienes cuenta? <a href="/padres/login">Entra</a></div>
+    </div>
+</body>
+</html>

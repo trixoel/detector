@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    {% block refresh %}{% endblock %}
+    <title>Portal de familias — {{ nombre }}</title>
+    <style>
+        :root {
+            --azul: #0b3d66; --verde: #16a34a; --rojo: #dc2626; --gris: #6b7280; --borde: #e5e7eb;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+            margin: 0; background: #f4f5f7; color: #1f2937;
+        }
+        header {
+            background: var(--azul); color: white; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem;
+        }
+        header .titulo h1 { margin: 0; font-size: 1.2rem; }
+        header .titulo p { margin: .2rem 0 0; color: #cfe0f2; font-size: .85rem; }
+        header nav { display: flex; gap: 1rem; align-items: center; }
+        header nav a { color: #cfe0f2; text-decoration: none; font-size: .85rem; }
+        header nav a.activo { color: white; font-weight: 700; border-bottom: 2px solid white; }
+        main { padding: 1.5rem 2rem; max-width: 760px; margin: 0 auto; }
+        .panel {
+            background: white; border: 1px solid var(--borde); border-radius: 10px;
+            padding: 1.2rem; margin-bottom: 1.2rem;
+        }
+    </style>
+    {% block estilos %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="titulo">
+            <h1>Portal de familias</h1>
+            <p>Alumno: {{ nombre }}</p>
+        </div>
+        <nav>
+            <a class="{{ 'activo' if seccion == 'faltas' else '' }}" href="/padres">Mis faltas</a>
+            <a class="{{ 'activo' if seccion == 'alumno' else '' }}" href="/padres/alumno">Datos de mi hijo/a</a>
+            <a href="/padres/logout">Cerrar sesión</a>
+        </nav>
+    </header>
+    <main>
+        {% block contenido %}{% endblock %}
+    </main>
+</body>
+</html>

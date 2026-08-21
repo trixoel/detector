@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Datos privados del proyecto (fotos, biometria, base de datos, justificantes)
+*.db
+*.db-*
+caras_detectadas/
+fotos/
+justificantes/

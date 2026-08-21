@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    {% block refresh %}{% endblock %}
+    <title>{% block titulo %}Control de asistencia{% endblock %}</title>
+    <style>
+        :root {
+            --azul: #0b3d66;
+            --azul-claro: #14508a;
+            --verde: #16a34a;
+            --naranja: #d97706;
+            --rojo: #dc2626;
+            --gris: #6b7280;
+            --fondo: #eef1f5;
+            --borde: #dde3ea;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 0;
+            background: var(--fondo);
+            color: #1f2937;
+            font-size: 14px;
+        }
+        .topbar {
+            background: var(--azul);
+            color: white;
+            padding: .7rem 1.5rem;
+            display: flex;
+            align-items: baseline;
+            gap: .6rem;
+            border-bottom: 3px solid #08243d;
+        }
+        .topbar .marca { font-weight: 700; letter-spacing: .02em; }
+        .topbar .centro { font-size: .85rem; color: #cfe0f2; }
+
+        .layout { display: flex; min-height: calc(100vh - 48px); }
+        .sidebar {
+            width: 190px; flex: 0 0 auto;
+            background: #0e2f4f;
+            padding: 1rem 0;
+        }
+        .sidebar a {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: .6rem 1.2rem; color: #cfe0f2; text-decoration: none; font-size: .88rem;
+            border-left: 3px solid transparent;
+        }
+        .sidebar a:hover { background: #123a60; }
+        .sidebar a.activo { background: #123a60; border-left-color: #4da3ff; color: white; font-weight: 600; }
+        .sidebar .badge-nav {
+            background: var(--rojo); color: white; border-radius: 999px;
+            font-size: .7rem; padding: 0 .4rem;
+        }
+
+        main { flex: 1 1 auto; padding: 1.3rem 1.6rem; overflow-x: auto; }
+
+        .panel {
+            background: white; border: 1px solid var(--borde); border-radius: 8px;
+            margin-bottom: 1.2rem; overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,.03);
+        }
+        .panel h2 {
+            margin: 0; padding: .7rem 1.1rem; border-bottom: 1px solid var(--borde);
+            font-size: 1rem; background: #f8f9fb;
+        }
+        .panel h2 small { color: var(--gris); font-weight: normal; }
+
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: .5rem 1.1rem; text-align: left; }
+        th {
+            font-size: .7rem; text-transform: uppercase; letter-spacing: .03em;
+            color: var(--gris); border-bottom: 1px solid var(--borde);
+        }
+        tr:not(:last-child) td { border-bottom: 1px solid var(--borde); }
+
+        .badge {
+            display: inline-block; padding: .15rem .6rem; border-radius: 999px;
+            font-size: .78rem; font-weight: 600; color: white;
+        }
+        .a_tiempo { background: var(--verde); }
+        .retraso { background: var(--naranja); }
+        .falta { background: var(--rojo); }
+        .justificada { background: var(--gris); }
+
+        .motivo { color: var(--gris); font-style: italic; }
+        .link-padres { color: #2563eb; font-size: .85rem; text-decoration: none; }
+        .link-padres:hover { text-decoration: underline; }
+    </style>
+    {% block estilos %}{% endblock %}
+</head>
+<body>
+    <div class="topbar">
+        <span class="marca">Sistema de Control de Asistencia</span>
+        <span class="centro">— IES Tecnológico · 2º Bachillerato Tecnológico de Excelencia</span>
+    </div>
+    <div class="layout">
+        <nav class="sidebar">
+            <a class="{{ 'activo' if seccion == 'asistencia' else '' }}" href="/">Asistencia</a>
+            <a class="{{ 'activo' if seccion == 'horario' else '' }}" href="/horario">Horario</a>
+            <a class="{{ 'activo' if seccion == 'alumnado' else '' }}" href="/alumnado">Alumnado</a>
+            <a class="{{ 'activo' if seccion == 'alertas' else '' }}" href="/alertas">
+                Alertas
+                {% if nav_alertas_pendientes %}<span class="badge-nav">{{ nav_alertas_pendientes }}</span>{% endif %}
+            </a>
+        </nav>
+        <main>
+            {% block contenido %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
