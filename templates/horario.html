@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titulo %}Horario{% endblock %}
+
+{% block estilos %}
+<style>
+    .grid-horario th, .grid-horario td { text-align: center; }
+    .grid-horario td.hora { text-align: left; font-size: .78rem; color: var(--gris); white-space: nowrap; }
+    .grid-horario td.recreo { background: #fff7ed; color: #92400e; font-weight: 600; }
+    .grid-horario td.asignatura { font-weight: 600; font-size: .85rem; }
+    .grid-horario td.vacio { color: #cbd5e1; }
+</style>
+{% endblock %}
+
+{% block contenido %}
+    {% for tabla in tablas %}
+        <div class="panel">
+            <h2>{{ tabla.nombre }} <small>horario semanal</small></h2>
+            <table class="grid-horario">
+                <tr>
+                    <th>Hora</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                </tr>
+                {% for fila in tabla.filas %}
+                <tr>
+                    <td class="hora">{{ fila.inicio }} – {{ fila.fin }}</td>
+                    {% for asignatura in fila.dias %}
+                        {% if asignatura == "RECREO" %}
+                            <td class="recreo">RECREO</td>
+                        {% elif asignatura %}
+                            <td class="asignatura">{{ asignatura }}</td>
+                        {% else %}
+                            <td class="vacio">—</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}

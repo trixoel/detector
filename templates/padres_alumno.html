@@ -1,0 +1,56 @@
+{% extends "padres_base.html" %}
+
+{% block estilos %}
+<style>
+    .datos dt { color: var(--gris); font-size: .8rem; margin-top: .6rem; }
+    .datos dd { margin: 0; font-size: 1rem; }
+    .resumen { display: flex; gap: 1rem; }
+    .resumen .stat {
+        flex: 1; text-align: center; padding: .8rem; border-radius: 8px; background: #f8f9fb;
+        border: 1px solid var(--borde);
+    }
+    .resumen .stat .num { font-size: 1.6rem; font-weight: 700; }
+    .resumen .stat .lbl { font-size: .78rem; color: var(--gris); }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: .4rem .2rem; text-align: left; font-size: .85rem; }
+    th { color: var(--gris); font-size: .72rem; text-transform: uppercase; border-bottom: 1px solid var(--borde); }
+</style>
+{% endblock %}
+
+{% block contenido %}
+    <div class="panel datos">
+        <h2 style="margin-top:0">Datos del alumno/a</h2>
+        <dl>
+            <dt>Nombre</dt><dd>{{ nombre }}</dd>
+            <dt>Grupo</dt><dd>{{ clase_nombre or "Sin asignar" }}</dd>
+        </dl>
+    </div>
+
+    <div class="panel">
+        <h2 style="margin-top:0">Resumen de asistencia ({{ dias_revisados }} últimos días lectivos)</h2>
+        <div class="resumen">
+            <div class="stat"><div class="num">{{ total_faltas }}</div><div class="lbl">Faltas totales</div></div>
+            <div class="stat"><div class="num">{{ justificadas }}</div><div class="lbl">Justificadas</div></div>
+            <div class="stat"><div class="num">{{ pendientes }}</div><div class="lbl">Sin justificar</div></div>
+        </div>
+    </div>
+
+    {% if horario_filas %}
+    <div class="panel">
+        <h2 style="margin-top:0">Horario semanal</h2>
+        <table>
+            <tr>
+                <th>Hora</th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th>
+            </tr>
+            {% for fila in horario_filas %}
+            <tr>
+                <td>{{ fila.inicio }}–{{ fila.fin }}</td>
+                {% for asignatura in fila.dias %}
+                    <td>{{ asignatura or "—" }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+{% endblock %}

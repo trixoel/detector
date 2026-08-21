@@ -1,0 +1,60 @@
+{% extends "padres_base.html" %}
+{% block refresh %}<meta http-equiv="refresh" content="30">{% endblock %}
+
+{% block estilos %}
+<style>
+    .aviso {
+        background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;
+        padding: .8rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: .9rem;
+    }
+    .falta { margin-bottom: 1rem; }
+    .falta .fecha { font-weight: 600; }
+    .falta .estado { color: var(--rojo); font-size: .85rem; }
+    .falta .justificada { color: var(--verde); font-size: .85rem; }
+    .falta form { display: flex; gap: .5rem; margin-top: .6rem; flex-wrap: wrap; align-items: center; }
+    .falta input[type=text] {
+        flex: 1; min-width: 160px; border: 1px solid var(--borde); border-radius: 6px; padding: .4rem .6rem;
+    }
+    .falta input[type=file] { font-size: .8rem; }
+    .falta button {
+        border: none; border-radius: 6px; padding: .4rem 1rem;
+        background: var(--azul); color: white; cursor: pointer;
+    }
+    .archivo-link { font-size: .82rem; }
+    .sin-faltas { color: var(--gris); font-style: italic; }
+</style>
+{% endblock %}
+
+{% block contenido %}
+    {% set pendientes = faltas | rejectattr("justificada") | list %}
+    {% if pendientes %}
+        <div class="aviso">
+            Tienes {{ pendientes | length }} falta(s) sin justificar. Puedes justificarlas aquí abajo,
+            adjuntando un justificante (médico, etc.) si lo tienes.
+        </div>
+    {% endif %}
+
+    {% if faltas %}
+        {% for falta in faltas %}
+            <div class="panel falta">
+                <div class="fecha">{{ falta.fecha }} — {{ falta.asignaturas | join(", ") }}</div>
+                {% if falta.justificada %}
+                    <div class="justificada">Justificada</div>
+                    {% if falta.archivo %}
+                        <a class="archivo-link" href="/justificantes/{{ falta.archivo }}" target="_blank">Ver justificante adjunto</a>
+                    {% endif %}
+                {% else %}
+                    <div class="estado">Falta sin justificar</div>
+                    <form method="post" action="/padres/justificar" enctype="multipart/form-data">
+                        <input type="hidden" name="fecha" value="{{ falta.fecha }}">
+                        <input type="text" name="motivo" placeholder="Motivo de la falta" required>
+                        <input type="file" name="justificante" accept=".pdf,.jpg,.jpeg,.png">
+                        <button type="submit">Justificar</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="sin-faltas">No hay faltas registradas en los últimos días.</p>
+    {% endif %}
+{% endblock %}

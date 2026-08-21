@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block refresh %}<meta http-equiv="refresh" content="15">{% endblock %}
+{% block titulo %}Alertas{% endblock %}
+
+{% block estilos %}
+<style>
+    .tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    .tabs a {
+        padding: .35rem .9rem; border-radius: 6px; text-decoration: none;
+        font-size: .85rem; color: var(--azul); background: white; border: 1px solid var(--borde);
+    }
+    .tabs a.activo { background: var(--azul); color: white; border-color: var(--azul); }
+</style>
+{% endblock %}
+
+{% block contenido %}
+    <div class="tabs">
+        <a class="{{ 'activo' if not solo_pendientes else '' }}" href="/alertas">Todas</a>
+        <a class="{{ 'activo' if solo_pendientes else '' }}" href="/alertas?pendientes=1">Solo pendientes</a>
+    </div>
+
+    <div class="panel">
+        <h2>Registro de alertas <small>generadas automaticamente al terminar cada clase sin asistencia</small></h2>
+        <table>
+            <tr>
+                <th>Fecha</th>
+                <th>Alumno</th>
+                <th>Asignatura</th>
+                <th>Generada</th>
+                <th>Estado</th>
+            </tr>
+            {% for alerta in alertas %}
+            <tr>
+                <td>{{ alerta.fecha }}</td>
+                <td>{{ alerta.nombre }}</td>
+                <td>{{ alerta.asignatura }}</td>
+                <td>{{ alerta.creado }}</td>
+                <td>
+                    {% if alerta.justificada %}
+                        <span class="badge justificada">Justificada</span>
+                    {% else %}
+                        <span class="badge falta">Pendiente</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="motivo">No hay alertas.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

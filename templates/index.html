@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}
+{% block titulo %}Asistencia{% endblock %}
+
+{% block estilos %}
+<style>
+    .filtros {
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: .6rem; margin-bottom: 1rem;
+    }
+    .dias-semana { display: flex; gap: .4rem; }
+    .dias-semana a {
+        padding: .35rem .8rem; border-radius: 6px; text-decoration: none;
+        font-size: .85rem; color: white; background: var(--azul-claro);
+    }
+    .dias-semana a.activo { background: #4da3ff; color: #06263f; font-weight: 700; }
+    .filtros form { display: flex; gap: .5rem; align-items: center; }
+    .filtros input[type=date] { border: 1px solid var(--borde); border-radius: 6px; padding: .35rem .5rem; }
+    .filtros button {
+        border: none; border-radius: 6px; padding: .35rem .9rem;
+        background: var(--azul); color: white; cursor: pointer;
+    }
+
+    .horario-tramos {
+        display: flex; gap: .5rem; padding: 1rem 1.1rem;
+        overflow-x: auto; background: #fafbfc; border-bottom: 1px solid var(--borde);
+    }
+    .tramo {
+        flex: 0 0 auto; min-width: 110px; border-radius: 8px; padding: .5rem .7rem;
+        background: #eef2ff; border: 1px solid #dbe3ff; text-decoration: none; color: inherit;
+    }
+    .tramo:hover { border-color: #a5b4fc; }
+    .tramo.activo { background: var(--azul); border-color: var(--azul); color: white; }
+    .tramo.recreo { background: #fff7ed; border-color: #fde3c4; }
+    .tramo .horas { font-size: .72rem; opacity: .75; }
+    .tramo .asignatura { font-size: .85rem; font-weight: 600; margin-top: .15rem; }
+    .sin-clase { padding: 1rem 1.1rem; color: var(--gris); font-style: italic; }
+    .asignatura-activa {
+        padding: .5rem 1.1rem; font-size: .85rem; color: var(--gris);
+        border-bottom: 1px solid var(--borde);
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+    <div class="filtros">
+        <div class="dias-semana">
+            {% for dia in dias_semana %}
+                <a class="{{ 'activo' if dia.activo else '' }}" href="/?fecha={{ dia.fecha }}">{{ dia.nombre }}</a>
+            {% endfor %}
+        </div>
+        <form method="get">
+            <input type="date" name="fecha" value="{{ fecha }}">
+            <button type="submit">Ver</button>
+            <a href="/?fecha={{ hoy }}" class="link-padres">Hoy</a>
+        </form>
+    </div>
+
+    {% for clase in clases %}
+        <div class="panel">
+            <h2>{{ clase.nombre }}</h2>
+
+            {% if clase.tramos %}
+            <div class="horario-tramos">
+                {% for tramo in clase.tramos %}
+                    {% if tramo.asignatura == "RECREO" %}
+                        <div class="tramo recreo">
+                            <div class="horas">{{ tramo.inicio }} – {{ tramo.fin }}</div>
+                            <div class="asignatura">{{ tramo.asignatura }}</div>
+                        </div>
+                    {% else %}
+                        <a class="tramo {{ 'activo' if tramo.inicio == clase.tramo_activo else '' }}"
+                           href="?fecha={{ fecha }}&hora={{ tramo.inicio }}#clase-{{ clase.id }}">
+                            <div class="horas">{{ tramo.inicio }} – {{ tramo.fin }}</div>
+                            <div class="asignatura">{{ tramo.asignatura }}</div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="asignatura-activa" id="clase-{{ clase.id }}">
+                Mostrando asistencia de: <strong>{{ clase.asignatura_activa or "—" }}</strong>
+            </div>
+            {% else %}
+                <div class="sin-clase">Sin clase hoy</div>
+            {% endif %}
+
+            <table>
+                <tr>
+                    <th>Alumno</th>
+                    <th>Hora llegada</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+                {% for alumno in clase.alumnos %}
+                <tr>
+                    <td>{{ alumno.nombre }}</td>
+                    <td>{{ alumno.hora_llegada or "—" }}</td>
+                    <td><span class="badge {{ alumno.estado }}">{{ alumno.estado.replace("_", " ") }}</span></td>
+                    <td>
+                        {% if alumno.estado == "falta" %}
+                            <a class="link-padres" href="/padres/login">Portal de familias →</a>
+                        {% elif alumno.motivo %}
+                            <span class="motivo">{{ alumno.motivo }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}
