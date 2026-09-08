@@ -1,3 +1,5 @@
+{# Login del portal de familias. No hereda de padres_base.html a proposito: sin sesion
+   iniciada no tiene sentido mostrar el menu (Mis faltas / Datos del alumno). #}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -31,6 +33,7 @@
 <body>
     <div class="caja">
         <h1>Portal de familias</h1>
+        {# "error" lo rellena app.py solo si el POST de este mismo formulario fallo #}
         {% if error %}<div class="error">{{ error }}</div>{% endif %}
         <form method="post">
             <input type="email" name="email" placeholder="Email" required>

@@ -1,3 +1,4 @@
+{# Listado de alumnos por clase, con su estado de cuenta de familia y faltas pendientes. #}
 {% extends "base.html" %}
 {% block titulo %}Alumnado{% endblock %}
 
@@ -15,6 +16,8 @@
                 <tr>
                     <td>{{ alumno.nombre }}</td>
                     <td>
+                        {# se reutilizan los colores de estado (verde/rojo) aunque aqui no
+                           signifiquen "a tiempo"/"falta", sino "tiene cuenta"/"no tiene" #}
                         {% if alumno.email_padre %}
                             <span class="badge a_tiempo">Activa</span> {{ alumno.email_padre }}
                         {% else %}

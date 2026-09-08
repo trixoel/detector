@@ -1,3 +1,4 @@
+{# Horario semanal en formato cuadricula real: filas = tramos horarios, columnas = dias. #}
 {% extends "base.html" %}
 {% block titulo %}Horario{% endblock %}
 
@@ -24,6 +25,8 @@
                     <th>Jueves</th>
                     <th>Viernes</th>
                 </tr>
+                {# fila.dias trae 5 posiciones (lunes..viernes); si un dia no tiene tramo
+                   a esa hora, app.py mete un string vacio y aqui se pinta como "—" #}
                 {% for fila in tabla.filas %}
                 <tr>
                     <td class="hora">{{ fila.inicio }} – {{ fila.fin }}</td>

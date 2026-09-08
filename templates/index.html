@@ -1,5 +1,6 @@
+{# Vista principal (/): asistencia de una asignatura concreta, en un dia concreto. #}
 {% extends "base.html" %}
-{% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}
+{% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}{# se recarga sola cada 10s para ver llegadas nuevas sin tener que refrescar a mano #}
 {% block titulo %}Asistencia{% endblock %}
 
 {% block estilos %}
@@ -44,6 +45,8 @@
 
 {% block contenido %}
     <div class="filtros">
+        {# pestanas Lunes-Viernes de la semana que se esta viendo; cada una enlaza a su
+           propia fecha (calculada en app.py) y "activo" resalta el dia actual #}
         <div class="dias-semana">
             {% for dia in dias_semana %}
                 <a class="{{ 'activo' if dia.activo else '' }}" href="/?fecha={{ dia.fecha }}">{{ dia.nombre }}</a>
@@ -56,11 +59,14 @@
         </form>
     </div>
 
+    {# normalmente hay una sola clase, pero el bucle soporta varias sin cambios #}
     {% for clase in clases %}
         <div class="panel">
             <h2>{{ clase.nombre }}</h2>
 
             {% if clase.tramos %}
+            {# el horario del dia, en tarjetas: el recreo no es clicable, las asignaturas
+               si lo son (llevan a ?hora=<inicio>) para elegir de que asignatura ver la asistencia #}
             <div class="horario-tramos">
                 {% for tramo in clase.tramos %}
                     {% if tramo.asignatura == "RECREO" %}
@@ -84,6 +90,8 @@
                 <div class="sin-clase">Sin clase hoy</div>
             {% endif %}
 
+            {# el color/texto del estado (a_tiempo/retraso/falta/justificada) sale de
+               las clases CSS .badge definidas en base.html #}
             <table>
                 <tr>
                     <th>Alumno</th>

@@ -1,3 +1,10 @@
+{#
+    Plantilla base del panel del profesor/centro. index.html, horario.html, alumnado.html
+    y alertas.html heredan de esta con "{% extends 'base.html' %}" y solo rellenan los
+    "huecos" (blocks) que necesitan: refresh (meta de auto-recarga, opcional), titulo,
+    estilos propios de esa pagina, y el contenido en si. Asi la cabecera, el menu lateral
+    y el CSS comun no hay que repetirlos en cada archivo.
+#}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +14,7 @@
     <style>
         :root {
             --azul: #0b3d66;
-            --azul-claro: #14508a;
+            --azul-claro: #195288;
             --verde: #16a34a;
             --naranja: #d97706;
             --rojo: #dc2626;
@@ -74,6 +81,9 @@
         }
         tr:not(:last-child) td { border-bottom: 1px solid var(--borde); }
 
+        /* Colores de estado: las clases se llaman igual que los valores del campo
+           "estado" que calcula app.py (a_tiempo, retraso, falta, justificada), asi que
+           en las plantillas basta con usar ese valor directamente como clase CSS */
         .badge {
             display: inline-block; padding: .15rem .6rem; border-radius: 999px;
             font-size: .78rem; font-weight: 600; color: white;
@@ -95,16 +105,21 @@
         <span class="centro">— IES Tecnológico · 2º Bachillerato Tecnológico de Excelencia</span>
     </div>
     <div class="layout">
+        {# cada ruta de app.py pasa "seccion" a render_template (ej. seccion="horario");
+           se usa aqui solo para marcar en negrita el enlace de la pagina en la que se esta #}
         <nav class="sidebar">
             <a class="{{ 'activo' if seccion == 'asistencia' else '' }}" href="/">Asistencia</a>
             <a class="{{ 'activo' if seccion == 'horario' else '' }}" href="/horario">Horario</a>
             <a class="{{ 'activo' if seccion == 'alumnado' else '' }}" href="/alumnado">Alumnado</a>
             <a class="{{ 'activo' if seccion == 'alertas' else '' }}" href="/alertas">
                 Alertas
+                {# nav_alertas_pendientes lo inyecta app.py en TODAS las paginas via
+                   @app.context_processor, por eso no hace falta pasarlo desde cada ruta #}
                 {% if nav_alertas_pendientes %}<span class="badge-nav">{{ nav_alertas_pendientes }}</span>{% endif %}
             </a>
         </nav>
         <main>
+            {# aqui es donde cada plantilla hija mete su contenido propio #}
             {% block contenido %}{% endblock %}
         </main>
     </div>

@@ -1,3 +1,4 @@
+{# Alta de cuenta de familia. Igual que el login, va suelta (sin heredar de padres_base.html). #}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,6 +34,8 @@
         <h1>Crear cuenta de familia</h1>
         {% if error %}<div class="error">{{ error }}</div>{% endif %}
         <form method="post">
+            {# "personas" trae TODOS los alumnos del sistema; no hay forma de verificar
+               aqui que quien se registra es realmente el padre/madre de ese alumno #}
             <select name="persona_id" required>
                 <option value="" disabled selected>Selecciona a tu hijo/a</option>
                 {% for persona_id, nombre in personas %}

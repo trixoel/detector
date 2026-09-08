@@ -1,3 +1,8 @@
+{#
+    Plantilla base del portal de FAMILIAS (distinta de base.html, que es la del profesor).
+    La heredan padres_dashboard.html y padres_alumno.html; login y registro van aparte
+    porque son paginas sueltas sin la cabecera/menu (todavia no hay sesion iniciada).
+#}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -36,6 +41,7 @@
             <h1>Portal de familias</h1>
             <p>Alumno: {{ nombre }}</p>
         </div>
+        {# "seccion" (pasado por cada ruta /padres/*) marca que enlace resaltar, igual que en base.html #}
         <nav>
             <a class="{{ 'activo' if seccion == 'faltas' else '' }}" href="/padres">Mis faltas</a>
             <a class="{{ 'activo' if seccion == 'alumno' else '' }}" href="/padres/alumno">Datos de mi hijo/a</a>

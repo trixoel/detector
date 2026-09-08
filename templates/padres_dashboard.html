@@ -1,3 +1,4 @@
+{# Ruta /padres (seccion "faltas"): faltas del alumno agrupadas por dia, con opcion de justificar. #}
 {% extends "padres_base.html" %}
 {% block refresh %}<meta http-equiv="refresh" content="30">{% endblock %}
 
@@ -26,6 +27,8 @@
 {% endblock %}
 
 {% block contenido %}
+    {# filtro de Jinja: se queda solo con las faltas cuyo "justificada" sea false,
+       para poder contarlas sin tocar la lista original #}
     {% set pendientes = faltas | rejectattr("justificada") | list %}
     {% if pendientes %}
         <div class="aviso">
@@ -40,11 +43,14 @@
                 <div class="fecha">{{ falta.fecha }} — {{ falta.asignaturas | join(", ") }}</div>
                 {% if falta.justificada %}
                     <div class="justificada">Justificada</div>
+                    {# el enlace de descarga solo aparece si se adjunto un archivo al justificar #}
                     {% if falta.archivo %}
                         <a class="archivo-link" href="/justificantes/{{ falta.archivo }}" target="_blank">Ver justificante adjunto</a>
                     {% endif %}
                 {% else %}
                     <div class="estado">Falta sin justificar</div>
+                    {# enctype="multipart/form-data" es obligatorio para que el input type="file"
+                       viaje realmente en el POST; sin esto el archivo se perderia #}
                     <form method="post" action="/padres/justificar" enctype="multipart/form-data">
                         <input type="hidden" name="fecha" value="{{ falta.fecha }}">
                         <input type="text" name="motivo" placeholder="Motivo de la falta" required>

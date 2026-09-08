@@ -222,4 +222,14 @@ __marimo__/
 *.db-*
 caras_detectadas/
 fotos/
+
+# Documentos personales (no son para el repo publico)
+*.docx
+~$*
+
+# Artefactos de compilacion de PyInstaller (los .exe se generan, no se versionan)
+build/
+dist/
+detector_portable/
+*.spec
 justificantes/

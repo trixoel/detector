@@ -1,3 +1,4 @@
+{# Log de todas las alertas de falta generadas automaticamente (ver sincronizar_alertas en app.py). #}
 {% extends "base.html" %}
 {% block refresh %}<meta http-equiv="refresh" content="15">{% endblock %}
 {% block titulo %}Alertas{% endblock %}
@@ -14,6 +15,7 @@
 {% endblock %}
 
 {% block contenido %}
+    {# filtro por query string (?pendientes=1); app.py decide que filas mandar segun esto #}
     <div class="tabs">
         <a class="{{ 'activo' if not solo_pendientes else '' }}" href="/alertas">Todas</a>
         <a class="{{ 'activo' if solo_pendientes else '' }}" href="/alertas?pendientes=1">Solo pendientes</a>
@@ -28,6 +30,7 @@
                 <th>Asignatura</th>
                 <th>Generada</th>
                 <th>Estado</th>
+                <th></th>
             </tr>
             {% for alerta in alertas %}
             <tr>
@@ -42,9 +45,16 @@
                         <span class="badge falta">Pendiente</span>
                     {% endif %}
                 </td>
+                <td>
+                    {# solo aparece si la familia adjunto un archivo al justificar esa falta #}
+                    {% if alerta.archivo %}
+                        <a class="link-padres" href="/alertas/justificante/{{ alerta.archivo }}" target="_blank">Descargar justificante</a>
+                    {% endif %}
+                </td>
             </tr>
             {% else %}
-            <tr><td colspan="5" class="motivo">No hay alertas.</td></tr>
+            {# "for ... else" en Jinja: este bloque solo se pinta si la lista "alertas" esta vacia #}
+            <tr><td colspan="6" class="motivo">No hay alertas.</td></tr>
             {% endfor %}
         </table>
     </div>

@@ -11,6 +11,7 @@ portal propio para las familias).
 |---------------------------|----------|
 | `reconocer.py`             | Abre la cámara, detecta y reconoce caras en directo, registra asistencia. Pulsa `r` para dar de alta a alguien nuevo desde la propia cámara. |
 | `registrar_persona.py`     | Da de alta a alguien a partir de una foto ya existente (`python registrar_persona.py "Nombre" foto.jpg`). |
+| `seed_datos.py`            | Comprueba que la clase y el horario de partida existen (se crean solos, ver "Primer uso"); opcional, solo para confirmarlo a mano. |
 | `app.py`                   | Web (Flask): vista del profesor (asistencia, horario, alumnado, alertas) y portal de familias con login. |
 | `db.py`                    | Acceso a la base de datos SQLite (`asistencia.db`, se crea sola al primer uso). |
 | `templates/`               | Plantillas HTML de la web. |
@@ -31,19 +32,13 @@ Puede tardar varios minutos.
 
 ## Primer uso
 
-La base de datos se crea vacía. Antes de usar la cámara hace falta al menos
-una clase con horario:
+La base de datos se crea sola, con la clase por defecto y su horario semanal
+ya cargados (ver `db.asegurar_clase_por_defecto`), la primera vez que arranca
+`app.py` o `reconocer.py` — no hay que ejecutar nada a mano. Para cambiar el
+nombre de la clase o las asignaturas, edita las constantes `NOMBRE_CLASE_DEFECTO`
+/ `HORARIO_SEMANAL_DEFECTO` al principio de `db.py`.
 
-```python
-import db
-conn = db.conectar()
-db.crear_clase(conn, "2 Bachillerato Tecnologico de Excelencia", "08:15")
-clase_id = conn.execute("SELECT id FROM clases").fetchone()[0]
-db.guardar_horario(conn, clase_id, 0, "08:15", "09:10", "Matematicas II")  # dia_semana: 0=lunes .. 4=viernes
-# ... repetir por cada tramo/dia
-```
-
-Luego, para dar de alta alumnos, dos opciones:
+Para dar de alta alumnos, dos opciones:
 - En directo: ejecuta `reconocer.py`, pon la cara delante de la cámara y pulsa `r`.
 - Desde foto: `python registrar_persona.py "Nombre" foto.jpg`.
 
@@ -70,7 +65,12 @@ python reconocer.py   # ventana de la camara
 ## Notas
 
 - La cámara en Windows usa el backend DirectShow (`cv2.CAP_DSHOW`); si falla
-  al abrir, comprueba que ningún otro proceso la tenga abierta.
+  al abrir, comprueba que ningún otro proceso la tenga abierta. Este backend
+  es específico de Windows: en Mac/Linux hay que quitar `cv2.CAP_DSHOW` de
+  `cv2.VideoCapture(0, cv2.CAP_DSHOW)` en `reconocer.py` (dejar solo `cv2.VideoCapture(0)`).
+- Todos los scripts usan rutas relativas (`asistencia.db`, `caras_detectadas/`,
+  `justificantes/`), así que hay que ejecutarlos siempre desde dentro de la
+  carpeta del proyecto (`cd detector` antes de cualquier `python ...`).
 - `asistencia.db`, las fotos y los justificantes contienen datos personales
   y biométricos reales — están en `.gitignore` a propósito, no los subas a
   un repositorio público.
